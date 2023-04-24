@@ -39,7 +39,7 @@ public class AddServiceImpl implements AddService {
         }
 
         if (title.length() > 100) {
-            map.put("error_message", "标题的长度不能大于100");
+            map.put("error_message", "标题长度不能大于100");
             return map;
         }
 
@@ -58,7 +58,7 @@ public class AddServiceImpl implements AddService {
         }
 
         if (content.length() > 10000) {
-            map.put("error_message", "代码的长度不能超过10000");
+            map.put("error_message", "代码长度不能超过10000");
             return map;
         }
 
