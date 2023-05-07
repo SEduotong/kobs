@@ -1,13 +1,14 @@
 import { AcGameObject } from "./AcGameObject";
-import { Snake } from "./Snake";
 import { Wall } from "./Wall";
+import { Snake } from './Snake';
 
 export class GameMap extends AcGameObject {
-    constructor(ctx, parent) {
+    constructor(ctx, parent, store) {
         super();
 
         this.ctx = ctx;
         this.parent = parent;
+        this.store = store;
         this.L = 0;
 
         this.rows = 13;
@@ -20,57 +21,10 @@ export class GameMap extends AcGameObject {
             new Snake({ id: 0, color: "#4876EC", r: this.rows - 2, c: 1 }, this),
             new Snake({ id: 1, color: "#F94848", r: 1, c: this.cols - 2 }, this),
         ];
-
-    }
-
-    check_connectivity(g, sx, sy, tx, ty) {
-        if (sx == tx && sy == ty) return true;
-        g[sx][sy] = true;
-
-        let dx = [-1, 0, 1, 0], dy = [0, 1, 0, -1];
-        for (let i = 0; i < 4; i++) {
-            let x = sx + dx[i], y = sy + dy[i];
-            if (!g[x][y] && this.check_connectivity(g, x, y, tx, ty))
-                return true;
-        }
-
-        return false;
     }
 
     create_walls() {
-        const g = [];
-        for (let r = 0; r < this.rows; r++) {
-            g[r] = [];
-            for (let c = 0; c < this.cols; c++) {
-                g[r][c] = false;
-            }
-        }
-
-        // 四周
-        for (let r = 0; r < this.rows; r++) {
-            g[r][0] = g[r][this.cols - 1] = true;
-        }
-
-        for (let c = 0; c < this.cols; c++) {
-            g[0][c] = g[this.rows - 1][c] = true;
-        }
-
-        // 创建随机障碍
-        for (let i = 0; i < this.inner_walls_count / 2; i++) {
-            for (let j = 0; j < 1000; j++) {
-                let r = parseInt(Math.random() * this.rows);
-                let c = parseInt(Math.random() * this.cols);
-                if (g[r][c] || g[this.rows - 1 - r][this.cols - 1 - c]) continue;
-                if (r == this.rows - 2 && c == 1 || c == this.cols - 2 && r == 1)
-                    continue;
-
-                g[r][c] = g[this.rows - 1 - r][this.cols - 1 - c] = true;
-                break;
-            }
-        }
-
-        const copy_g = JSON.parse(JSON.stringify(g));
-        if (!this.check_connectivity(copy_g, this.rows - 2, 1, 1, this.cols - 2)) return false;
+        const g = this.store.state.pk.gamemap;
 
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
@@ -79,8 +33,6 @@ export class GameMap extends AcGameObject {
                 }
             }
         }
-
-        return true;
     }
 
     add_listening_events() {
@@ -100,10 +52,7 @@ export class GameMap extends AcGameObject {
     }
 
     start() {
-        for (let i = 0; i < 1000; i++) {
-            if (this.create_walls())
-                break;
-        }
+        this.create_walls();
 
         this.add_listening_events();
     }
@@ -114,7 +63,7 @@ export class GameMap extends AcGameObject {
         this.ctx.canvas.height = this.L * this.rows;
     }
 
-    check_ready() { // 判断两条蛇是否准备好下一回合了
+    check_ready() {  // 判断两条蛇是否都准备好下一回合了
         for (const snake of this.snakes) {
             if (snake.status !== "idle") return false;
             if (snake.direction === -1) return false;
@@ -122,13 +71,13 @@ export class GameMap extends AcGameObject {
         return true;
     }
 
-    next_step() {
+    next_step() {  // 让两条蛇进入下一回合
         for (const snake of this.snakes) {
             snake.next_step();
         }
     }
 
-    check_valid(cell) { // 检测目标位置是否合法，不撞墙和身体
+    check_valid(cell) {  // 检测目标位置是否合法：没有撞到两条蛇的身体和障碍物
         for (const wall of this.walls) {
             if (wall.r === cell.r && wall.c === cell.c)
                 return false;
@@ -136,7 +85,7 @@ export class GameMap extends AcGameObject {
 
         for (const snake of this.snakes) {
             let k = snake.cells.length;
-            if (!snake.check_tail_increasing()) { // 当蛇尾会前进的时候，蛇尾不要判断
+            if (!snake.check_tail_increasing()) {  // 当蛇尾会前进的时候，蛇尾不要判断
                 k--;
             }
             for (let i = 0; i < k; i++) {
