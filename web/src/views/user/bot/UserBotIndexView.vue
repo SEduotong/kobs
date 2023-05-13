@@ -125,6 +125,7 @@ import { useStore } from 'vuex'
 import { Modal } from 'bootstrap/dist/js/bootstrap'
 import { VAceEditor } from 'vue3-ace-editor';
 import ace from 'ace-builds';
+import 'ace-builds/src-noconflict/mode-c_cpp';
 
 export default {
     components: {
