@@ -75,7 +75,7 @@
                                             <div class="modal-dialog modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">创建Bot</h5>
+                                                        <h5 class="modal-title">修改Bot</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
@@ -148,7 +148,7 @@ export default {
 
         const refresh_bots = () => {
             $.ajax({
-                url: "http://localhost:3000/user/bot/getlist/",
+                url: "http://localhost:3000/api/user/bot/getlist/",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
@@ -164,7 +164,7 @@ export default {
         const add_bot = () => {
             botadd.error_message = "";
             $.ajax({
-                url: "http://localhost:3000/user/bot/add/",
+                url: "http://localhost:3000/api/user/bot/add/",
                 type: "post",
                 data: {
                     title: botadd.title,
@@ -191,7 +191,7 @@ export default {
         const update_bot = (bot) => {
             botadd.error_message = "";
             $.ajax({
-                url: "http://localhost:3000/user/bot/update/",
+                url: "http://localhost:3000/api/user/bot/update/",
                 type: "post",
                 data: {
                     bot_id: bot.id,
@@ -215,7 +215,7 @@ export default {
 
         const remove_bot = (bot) => {
             $.ajax({
-                url: "http://localhost:3000/user/bot/remove/",
+                url: "http://localhost:3000/api/user/bot/remove/",
                 type: "post",
                 data: {
                     bot_id: bot.id,

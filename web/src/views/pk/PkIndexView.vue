@@ -2,6 +2,12 @@
     <PlayGround v-if="$store.state.pk.status === 'playing'" />
     <MatchGround v-if="$store.state.pk.status === 'matching'" />
     <ResultBoard v-if="$store.state.pk.loser != 'none'"></ResultBoard>
+    <div class="user-color"
+        v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)">
+        你出生在左下角</div>
+    <div class="user-color"
+        v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)">
+        你出生在右上角</div>
 </template>
 
 <script>
@@ -82,4 +88,11 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+div.user-color {
+    text-align: center;
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+}
+</style>

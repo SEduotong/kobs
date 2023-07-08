@@ -64,7 +64,7 @@ export default {
 
         const refresh_bots = () => {
             $.ajax({
-                url: "http://localhost:3000/user/bot/getlist/",
+                url: "http://localhost:3000/api/user/bot/getlist/",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
@@ -92,7 +92,8 @@ div.matchground {
     width: 60vw;
     height: 70vh;
     margin: 40px auto;
-    background-color: rgba(50, 50, 50, 0.5);
+    /* background-color: rgba(50, 50, 50, 0.5); */
+    background-color: rgba(245, 245, 245, 0.25);
 }
 
 div.user-photo {
